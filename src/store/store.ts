@@ -1,10 +1,5 @@
 import { createStore } from "redux";
-import { reducer } from "./reducer";
-
-export type StoreState = {
-  repositories: any[];
-  updatedAt?: Date;
-};
+import { initialState, reducer, StoreState } from "./reducer";
 
 const configureStore = (preloadedState: StoreState) => {
   const store = createStore(reducer, preloadedState);
@@ -12,6 +7,6 @@ const configureStore = (preloadedState: StoreState) => {
   return store;
 };
 
-const store = configureStore({ repositories: [] });
+const store = configureStore(initialState);
 
 export default store;

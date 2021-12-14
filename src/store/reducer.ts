@@ -1,19 +1,25 @@
 import { LOAD_PUBLIC_REPOSITORIES } from "./actionTypes";
 import { mock } from "./mock";
-import { StoreState } from "./store";
 
-export const reducer = (
-  state: StoreState = { repositories: [] },
-  action: any
-) => {
+export type StoreState = {
+  repositories: any[];
+  updatedAt?: Date;
+  currentPage: number;
+};
+
+export const initialState = { repositories: [], currentPage: 1 };
+
+export const reducer = (state: StoreState = initialState, action: any) => {
+  const data = mock.data;
+
   switch (action.type) {
     case LOAD_PUBLIC_REPOSITORIES:
       return {
         ...state,
         updatedAt: new Date(),
-        repositories: [
-          { url: "https://api.github.com/repositories", data: mock.data },
-        ],
+        repositories: Array.from(
+          new Set([...initialState.repositories, ...data])
+        ),
       };
     default:
       return { ...state };
