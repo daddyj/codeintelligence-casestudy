@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/system/Box";
+import { Link, Outlet } from "react-router-dom";
+import React from "react";
+import "./App.css";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
-function App() {
+const App: React.FC<{}> = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Provider store={store}>
+      <div className="App">
+        <AppBar>
+          <Toolbar>
+            <Box display="flex" width="100%">
+              <Typography>CASE STUDY</Typography>
+              <Box flex={1} />
+              <Link to="/repositories">Show repositories</Link>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <Box
+          sx={(theme) => ({
+            padding: theme.spacing(12, 4),
+          })}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Outlet />
+        </Box>
+      </div>
+    </Provider>
   );
-}
+};
 
 export default App;
