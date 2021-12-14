@@ -5,5 +5,5 @@ export const initOctokit = () => ({
 });
 
 export const loadPublicRepositories = () => ({
-  action: LOAD_PUBLIC_REPOSITORIES,
+  type: LOAD_PUBLIC_REPOSITORIES,
 });
