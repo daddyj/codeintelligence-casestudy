@@ -1,17 +1,51 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
 import React, { useCallback, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { Link, Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Outlet, useNavigate } from "react-router-dom";
 import "./App.css";
 import { useOctokit } from "./hooks/useOctokit";
-import { initOctokit } from "./store/actionCreators";
+import { Pagination } from "./screens/Repositories";
+import { initOctokit, setLoading } from "./store/actionCreators";
+import { StoreState } from "./store/reducer";
+
+const AppNavigation = () => {
+  const { since } = useSelector((state: StoreState) => state);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handlePageChange = useCallback(
+    (next: number) => () => {
+      dispatch(setLoading());
+      navigate(`/repositories?since=${next}`);
+    },
+    [navigate, dispatch]
+  );
+
+  return (
+    <AppBar>
+      <Toolbar>
+        <Box
+          display="flex"
+          width="100%"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Pagination since={since} onChange={handlePageChange} />
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+const MemoizedNavigation = React.memo(AppNavigation);
 
 const App: React.FC<{}> = () => {
   const dispatch = useDispatch();
   const octokit = useOctokit();
+  const navigate = useNavigate();
+  const { user } = useSelector((state: StoreState) => state);
 
   const initApp = useCallback(async () => {
     const response = await octokit?.rest.users.getAuthenticated();
@@ -25,20 +59,18 @@ const App: React.FC<{}> = () => {
     initApp();
   }, [initApp, octokit]);
 
+  useEffect(() => {
+    if (user && window.location.pathname === "/")
+      navigate("/repositories?since=0");
+  }, [user, navigate]);
+
   return (
     <div className="App">
-      <AppBar>
-        <Toolbar>
-          <Box display="flex" width="100%">
-            <Typography>CASE STUDY</Typography>
-            <Box flex={1} />
-            <Link to="/repositories">Show repositories</Link>
-          </Box>
-        </Toolbar>
-      </AppBar>
+      <MemoizedNavigation />
       <Box
         sx={(theme) => ({
-          padding: theme.spacing(12, 4),
+          padding: theme.spacing(16, 4),
+          paddingBottom: 0,
         })}
       >
         <Outlet />
