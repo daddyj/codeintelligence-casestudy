@@ -13,7 +13,7 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     dispatch(loadPublicRepositories());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="App">

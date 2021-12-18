@@ -6,6 +6,7 @@ import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { Repositories } from "./screens";
+import { Details } from "./screens/Details";
 import store from "./store/store";
 
 ReactDOM.render(
@@ -14,9 +15,10 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />}>
-            <Route path="repositories" element={<Repositories />} />
+            <Route path="repositories" element={<Repositories />}>
+              <Route path=":idRepository" element={<Details />} />
+            </Route>
           </Route>
-          <Route path="*" element={<>NO CONTENT!</>} />
         </Routes>
       </BrowserRouter>
     </Provider>
