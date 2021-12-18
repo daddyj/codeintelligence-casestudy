@@ -45,12 +45,8 @@ export const Repositories = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const octokit = useOctokit();
-  const { user, repositories, currentPage } = useSelector(
-    (state: StoreState) => ({
-      user: state.user,
-      repositories: state.repositories,
-      currentPage: state.currentPage,
-    })
+  const { user, repositories, currentPage, currentPageLoaded } = useSelector(
+    (state: StoreState) => state
   );
 
   const loadRepositoriesForCurrentPage = useCallback(async () => {
@@ -61,10 +57,10 @@ export const Repositories = () => {
   }, [currentPage, dispatch, octokit]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || currentPageLoaded) return;
 
     loadRepositoriesForCurrentPage();
-  }, [user, loadRepositoriesForCurrentPage]);
+  }, [user, currentPageLoaded, loadRepositoriesForCurrentPage]);
 
   return (
     <>
