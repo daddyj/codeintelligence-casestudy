@@ -49,6 +49,32 @@ const SkeletonTemplate = () => {
   );
 };
 
+const Pagination: React.FC<any> = ({ since, onChange }) => {
+  return (
+    <Box display="flex" justifyContent="center" marginY={4}>
+      <Button variant="contained" onClick={onChange(0, true)}>
+        FIRST PAGE
+      </Button>
+      {since?.prev ? (
+        <>
+          <Box width={16} />
+          <Button variant="contained" onClick={onChange(since.prev)}>
+            PREVIOUS PAGE
+          </Button>
+        </>
+      ) : null}
+      {since?.next && (
+        <>
+          <Box width={16} />
+          <Button variant="contained" onClick={onChange(since.next)}>
+            NEXT PAGE
+          </Button>
+        </>
+      )}
+    </Box>
+  );
+};
+
 export const Repositories = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -76,18 +102,20 @@ export const Repositories = () => {
     [dispatch, octokit]
   );
 
-  const handlePageChange =
+  const handlePageChange = useCallback(
     (next: number, resetIndices = false) =>
-    () => {
-      loadRepositories(next, resetIndices);
-    };
+      () => {
+        dispatch(setLoading());
+        loadRepositories(next, resetIndices);
+      },
+    [loadRepositories, dispatch]
+  );
 
   useEffect(() => {
-    if (user && !currentPageLoaded) {
-      dispatch(setLoading());
+    if (user && repositories.length === 0) {
       loadRepositories(since.current);
     }
-  }, [user, since, currentPageLoaded, loadRepositories, dispatch]);
+  }, [user, since, repositories, loadRepositories, dispatch]);
 
   useEffect(() => {
     console.log("currentPageLoaded", currentPageLoaded, since);
@@ -153,7 +181,7 @@ export const Repositories = () => {
               },
             })}
           >
-            {!user || repositories.length === 0 ? (
+            {!currentPageLoaded ? (
               <>
                 <SkeletonTemplate />
                 <SkeletonTemplate />
@@ -216,11 +244,7 @@ export const Repositories = () => {
           )}
         </Box>
 
-        <Box display="flex" justifyContent="center" marginY={4}>
-          <Button variant="contained">PREVIOUS PAGE</Button>
-          <Box width={16} />
-          <Button variant="contained">NEXT PAGE</Button>
-        </Box>
+        <Pagination since={since} onChange={handlePageChange} />
       </Box>
     </>
   );
