@@ -15,9 +15,8 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />}>
-            <Route path="repositories" element={<Repositories />}>
-              <Route path=":idRepository" element={<Details />} />
-            </Route>
+            <Route path="repositories" element={<Repositories />}></Route>
+            <Route path="repositories/:idRepository" element={<Details />} />
           </Route>
         </Routes>
       </BrowserRouter>
