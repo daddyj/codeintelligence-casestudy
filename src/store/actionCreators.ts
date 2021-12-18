@@ -1,4 +1,8 @@
-import { INIT_OCTOKIT, LOAD_PUBLIC_REPOSITORIES } from "./actionTypes";
+import {
+  INIT_OCTOKIT,
+  LOAD_PUBLIC_REPOSITORIES,
+  SET_LOADING,
+} from "./actionTypes";
 
 export const initOctokit = (user: string) => {
   return {
@@ -7,7 +11,17 @@ export const initOctokit = (user: string) => {
   };
 };
 
-export const setRepositoriesForCurrentPage = (repositories: any[]) => ({
+export const setRepositoriesForCurrentPage = ({
+  data,
+  link,
+  resetIndices,
+}: any) => ({
   type: LOAD_PUBLIC_REPOSITORIES,
-  payload: repositories,
+  data,
+  link,
+  resetIndices,
+});
+
+export const setLoading = () => ({
+  type: SET_LOADING,
 });

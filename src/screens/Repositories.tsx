@@ -7,9 +7,17 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, Outlet, useParams } from "react-router-dom";
+import {
+  Link as RouterLink,
+  Outlet,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 import { useOctokit } from "../hooks/useOctokit";
-import { setRepositoriesForCurrentPage } from "../store/actionCreators";
+import {
+  setLoading,
+  setRepositoriesForCurrentPage,
+} from "../store/actionCreators";
 import { StoreState } from "../store/reducer";
 
 const SkeletonTemplate = () => {
@@ -43,24 +51,48 @@ const SkeletonTemplate = () => {
 
 export const Repositories = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const octokit = useOctokit();
-  const { user, repositories, currentPage, currentPageLoaded } = useSelector(
+  const { user, repositories, since, currentPageLoaded } = useSelector(
     (state: StoreState) => state
   );
 
-  const loadRepositoriesForCurrentPage = useCallback(async () => {
-    const pageUrl = currentPage === 1 ? "/repositories" : "#";
-    const response = await octokit?.request(`GET ${pageUrl}`);
-    console.log("public repositories", response);
-    if (response?.data) dispatch(setRepositoriesForCurrentPage(response?.data));
-  }, [currentPage, dispatch, octokit]);
+  const loadRepositories = useCallback(
+    async (since: number, resetIndices: boolean = false) => {
+      const response = await octokit?.request("GET /repositories", {
+        since,
+      });
+      console.log("public repositories", response);
+      if (response?.data && response?.headers.link)
+        dispatch(
+          setRepositoriesForCurrentPage({
+            data: response?.data,
+            link: response?.headers.link,
+            resetIndices,
+          })
+        );
+    },
+    [dispatch, octokit]
+  );
+
+  const handlePageChange =
+    (next: number, resetIndices = false) =>
+    () => {
+      loadRepositories(next, resetIndices);
+    };
 
   useEffect(() => {
-    if (!user || currentPageLoaded) return;
+    if (user && !currentPageLoaded) {
+      dispatch(setLoading());
+      loadRepositories(since.current);
+    }
+  }, [user, since, currentPageLoaded, loadRepositories, dispatch]);
 
-    loadRepositoriesForCurrentPage();
-  }, [user, currentPageLoaded, loadRepositoriesForCurrentPage]);
+  useEffect(() => {
+    console.log("currentPageLoaded", currentPageLoaded, since);
+    if (currentPageLoaded) navigate(`/repositories?since=${since.current}`);
+  }, [currentPageLoaded, navigate, since]);
 
   return (
     <>
@@ -68,7 +100,40 @@ export const Repositories = () => {
         List of all public repositories on github
       </Typography>
 
-      <Container>
+      <Box
+        component={Container}
+        maxWidth="lg"
+        display="flex"
+        flexDirection="column"
+      >
+        <Box display="flex" justifyContent="center" marginY={4}>
+          <Button variant="contained" onClick={handlePageChange(0, true)}>
+            FIRST PAGE
+          </Button>
+          {since?.prev ? (
+            <>
+              <Box width={16} />
+              <Button
+                variant="contained"
+                onClick={handlePageChange(since.prev)}
+              >
+                PREVIOUS PAGE
+              </Button>
+            </>
+          ) : null}
+          {since?.next && (
+            <>
+              <Box width={16} />
+              <Button
+                variant="contained"
+                onClick={handlePageChange(since.next)}
+              >
+                NEXT PAGE
+              </Button>
+            </>
+          )}
+        </Box>
+
         <Box
           display="flex"
           sx={(theme) => ({
@@ -82,14 +147,13 @@ export const Repositories = () => {
             flexBasis={params.idRepository ? "20%" : "100%"}
             overflow="scroll"
             sx={(theme) => ({
-              height: "60vh",
               [theme.breakpoints.only("xs")]: {
                 height: "10vh",
                 overflow: "hidden",
               },
             })}
           >
-            {!user && repositories.length === 0 ? (
+            {!user || repositories.length === 0 ? (
               <>
                 <SkeletonTemplate />
                 <SkeletonTemplate />
@@ -99,8 +163,6 @@ export const Repositories = () => {
               </>
             ) : (
               repositories?.map((repository: any) => {
-                console.log("repo data", repository);
-
                 return (
                   <Paper
                     variant="outlined"
@@ -153,7 +215,13 @@ export const Repositories = () => {
             </Box>
           )}
         </Box>
-      </Container>
+
+        <Box display="flex" justifyContent="center" marginY={4}>
+          <Button variant="contained">PREVIOUS PAGE</Button>
+          <Box width={16} />
+          <Button variant="contained">NEXT PAGE</Button>
+        </Box>
+      </Box>
     </>
   );
 };
