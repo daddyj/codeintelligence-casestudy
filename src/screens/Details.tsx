@@ -1,5 +1,6 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
 import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -55,7 +56,15 @@ export const Details: React.FC<{}> = () => {
               paddingY: 2,
             }}
           >
-            <GitHubIcon />
+            {contributor.avatar_url ? (
+              <Avatar
+                alt={`avatar-${contributor.login}`}
+                src={contributor.avatar_url}
+                sx={{ margin: "0 auto" }}
+              />
+            ) : (
+              <GitHubIcon />
+            )}
             <Typography variant="subtitle2">{contributor.login}</Typography>
             <Box
               display="flex"

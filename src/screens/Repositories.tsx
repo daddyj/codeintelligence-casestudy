@@ -50,7 +50,7 @@ const SkeletonTemplate = () => {
   );
 };
 
-const Pagination: React.FC<any> = ({ since, onChange }) => {
+export const Pagination: React.FC<any> = ({ since, onChange }) => {
   return (
     <Box display="flex" justifyContent="center" marginY={4}>
       <Button variant="contained" onClick={onChange(0, true)}>
@@ -70,7 +70,6 @@ const Pagination: React.FC<any> = ({ since, onChange }) => {
 
 export const Repositories = () => {
   const params = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const octokit = useOctokit();
   const { user, repositories, since, currentPageLoaded } = useSelector(
@@ -78,7 +77,7 @@ export const Repositories = () => {
   );
 
   const loadRepositories = useCallback(
-    async (since: number, resetIndices: boolean = false) => {
+    async (since: number) => {
       const response = await octokit?.request("GET /repositories", {
         since,
       });
@@ -88,37 +87,36 @@ export const Repositories = () => {
           setRepositoriesForCurrentPage({
             data: response?.data,
             link: response?.headers.link,
-            resetIndices,
           })
         );
     },
     [dispatch, octokit]
   );
 
-  const handlePageChange = useCallback(
-    (next: number, resetIndices = false) =>
-      () => {
-        dispatch(setLoading());
-        navigate(`/repositories?since=${next}`);
-      },
-    [navigate, dispatch]
-  );
-
   useEffect(() => {
     const parsed = queryString.parse(window.location.search);
 
     console.log("params", parsed.since);
-    if (parsed.since && !currentPageLoaded) {
+    if (parsed.since && user && !currentPageLoaded) {
       loadRepositories(+parsed.since);
       return;
     }
-  }, [currentPageLoaded, loadRepositories]);
+  }, [user, currentPageLoaded, loadRepositories]);
 
   return (
     <>
-      <Typography variant="h2">
-        List of all public repositories on github
-      </Typography>
+      {repositories.length > 0 && (
+        <Typography variant="h5">
+          List of all public repositories from{" "}
+          <Typography component="span" variant="h6" color="primary">
+            {repositories?.[0]?.name}
+          </Typography>{" "}
+          to{" "}
+          <Typography component="span" variant="h6" color="primary">
+            {repositories?.[repositories.length - 1]?.name}
+          </Typography>
+        </Typography>
+      )}
 
       <Box
         component={Container}
@@ -126,8 +124,6 @@ export const Repositories = () => {
         display="flex"
         flexDirection="column"
       >
-        <Pagination since={since} onChange={handlePageChange} />
-
         <Box
           display="flex"
           sx={(theme) => ({
@@ -209,8 +205,6 @@ export const Repositories = () => {
             </Box>
           )}
         </Box>
-
-        <Pagination since={since} onChange={handlePageChange} />
       </Box>
     </>
   );
