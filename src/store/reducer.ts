@@ -10,8 +10,7 @@ export type StoreState = {
   updatedAt?: Date;
   since: {
     current: number;
-    prev?: number;
-    next?: number;
+    next: number;
     first: number;
   };
   currentPageLoaded: boolean;
@@ -22,6 +21,7 @@ export const initialState = {
   since: {
     current: 0,
     first: 0,
+    next: 0,
   },
   currentPageLoaded: false,
 };
@@ -54,7 +54,6 @@ export const reducer = (state: StoreState = initialState, action: any) => {
         since: {
           ...state.since,
           current: resetIndices ? 0 : state.since.next ?? state.since.current,
-          prev: resetIndices ? undefined : state.since.current,
           next: nextSince,
         },
         currentPageLoaded: true,

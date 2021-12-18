@@ -19,6 +19,7 @@ import {
   setRepositoriesForCurrentPage,
 } from "../store/actionCreators";
 import { StoreState } from "../store/reducer";
+import queryString from "query-string";
 
 const SkeletonTemplate = () => {
   return (
@@ -55,22 +56,14 @@ const Pagination: React.FC<any> = ({ since, onChange }) => {
       <Button variant="contained" onClick={onChange(0, true)}>
         FIRST PAGE
       </Button>
-      {since?.prev ? (
-        <>
-          <Box width={16} />
-          <Button variant="contained" onClick={onChange(since.prev)}>
-            PREVIOUS PAGE
-          </Button>
-        </>
-      ) : null}
-      {since?.next && (
+      {since?.next ? (
         <>
           <Box width={16} />
           <Button variant="contained" onClick={onChange(since.next)}>
             NEXT PAGE
           </Button>
         </>
-      )}
+      ) : null}
     </Box>
   );
 };
@@ -106,21 +99,20 @@ export const Repositories = () => {
     (next: number, resetIndices = false) =>
       () => {
         dispatch(setLoading());
-        loadRepositories(next, resetIndices);
+        navigate(`/repositories?since=${next}`);
       },
-    [loadRepositories, dispatch]
+    [navigate, dispatch]
   );
 
   useEffect(() => {
-    if (user && repositories.length === 0) {
-      loadRepositories(since.current);
-    }
-  }, [user, since, repositories, loadRepositories, dispatch]);
+    const parsed = queryString.parse(window.location.search);
 
-  useEffect(() => {
-    console.log("currentPageLoaded", currentPageLoaded, since);
-    if (currentPageLoaded) navigate(`/repositories?since=${since.current}`);
-  }, [currentPageLoaded, navigate, since]);
+    console.log("params", parsed.since);
+    if (parsed.since && !currentPageLoaded) {
+      loadRepositories(+parsed.since);
+      return;
+    }
+  }, [currentPageLoaded, loadRepositories]);
 
   return (
     <>
@@ -134,33 +126,7 @@ export const Repositories = () => {
         display="flex"
         flexDirection="column"
       >
-        <Box display="flex" justifyContent="center" marginY={4}>
-          <Button variant="contained" onClick={handlePageChange(0, true)}>
-            FIRST PAGE
-          </Button>
-          {since?.prev ? (
-            <>
-              <Box width={16} />
-              <Button
-                variant="contained"
-                onClick={handlePageChange(since.prev)}
-              >
-                PREVIOUS PAGE
-              </Button>
-            </>
-          ) : null}
-          {since?.next && (
-            <>
-              <Box width={16} />
-              <Button
-                variant="contained"
-                onClick={handlePageChange(since.next)}
-              >
-                NEXT PAGE
-              </Button>
-            </>
-          )}
-        </Box>
+        <Pagination since={since} onChange={handlePageChange} />
 
         <Box
           display="flex"
