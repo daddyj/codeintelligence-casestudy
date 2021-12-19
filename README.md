@@ -14,9 +14,16 @@ OR
 
 I am using the following helper libraries for making things work:
 
+- `octokit`
 - `redux`
 - `react-router-dom`
 - `@mui` (Material-UI)
+
+#### octokit
+`octokit` is an official wrapper for the github API. For getting first insights about the package I decided to use it here for the API calls instead of using other Promise-based packages like `axios` for example. The great thing about `octokit`, from a developer experience, is the fact that all given API routes are fully typed available, when using the request function of the library, see for example the following screenshot:
+
+![image](https://user-images.githubusercontent.com/4239691/146686894-d76549b9-2fe1-4a1a-b22b-23275f492a33.png)
+
 
 #### redux
 
