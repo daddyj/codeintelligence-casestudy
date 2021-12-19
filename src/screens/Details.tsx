@@ -38,8 +38,11 @@ export const Details: React.FC<{}> = () => {
   }, [loadRepoInfo, metaInfo]);
 
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h3">Contributors for {metaInfo.name}</Typography>
+    <Container maxWidth="xs">
+      <Typography variant="h5">
+        Contributors for{" "}
+        <Typography color="#BCD104">{metaInfo.name}</Typography>
+      </Typography>
       <Box display="flex" flexDirection="column" marginY={2}>
         {contributors.map((contributor: any) => (
           <Paper
@@ -50,33 +53,30 @@ export const Details: React.FC<{}> = () => {
               paddingX: 4,
               paddingY: 2,
             }}
+            key={contributor.login}
           >
-            {contributor.avatar_url ? (
-              <Avatar
-                alt={`avatar-${contributor.login}`}
-                src={contributor.avatar_url}
-                sx={{ margin: "0 auto" }}
-              />
-            ) : (
-              <GitHubIcon />
-            )}
-            <Typography variant="subtitle2">{contributor.login}</Typography>
             <Box
               display="flex"
-              justifyContent="space-between"
               alignItems="center"
-              flexDirection="column"
-              sx={(theme) => ({
-                [theme.breakpoints.only("xs")]: {
-                  flexDirection: "column",
-                },
-              })}
+              justifyContent="space-around"
             >
-              <Box flex={1}>
-                <Typography variant="body2">
-                  Contributions: {contributor.contributions}
+              {contributor.avatar_url ? (
+                <Avatar
+                  alt={`avatar-${contributor.login}`}
+                  src={contributor.avatar_url}
+                />
+              ) : (
+                <GitHubIcon />
+              )}
+              <Typography variant="subtitle2" sx={{ flexBasis: "50%" }}>
+                {contributor.login}
+              </Typography>
+              <Typography variant="body2">
+                Contributions{" "}
+                <Typography fontWeight="bold">
+                  {contributor.contributions}
                 </Typography>
-              </Box>
+              </Typography>
             </Box>
           </Paper>
         ))}

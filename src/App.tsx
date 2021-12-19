@@ -33,8 +33,12 @@ const App: React.FC<{}> = () => {
       <AppNavigation />
       <Box
         sx={(theme) => ({
-          padding: theme.spacing(16, 4),
+          marginTop: theme.spacing(14),
+          paddingTop: theme.spacing(2),
           paddingBottom: 0,
+          backgroundColor: "#034485",
+          color: "white",
+          flexBasis: "100%",
         })}
       >
         <Outlet />

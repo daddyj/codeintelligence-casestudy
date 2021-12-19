@@ -45,7 +45,7 @@ const HeaderIntervalLabel: React.FC<any> = ({ isLoading, label }) => {
   return isLoading ? (
     <Skeleton width={100} sx={{ display: "inline-block" }} />
   ) : (
-    <Typography component="span" variant="h6" color="primary">
+    <Typography component="span" variant="h6" color="#BCD104">
       {label}
     </Typography>
   );
@@ -95,89 +95,83 @@ export const Repositories = () => {
         />
       </Typography>
 
-      <Box
-        component={Container}
-        maxWidth="lg"
-        display="flex"
-        flexDirection="column"
-      >
-        <Box
-          display="flex"
-          sx={(theme) => ({
-            [theme.breakpoints.only("xs")]: { flexDirection: "column" },
-          })}
-        >
+      <Container maxWidth="md">
+        <Box display="flex" flexDirection="column">
           <Box
             display="flex"
-            flexDirection="column"
-            paddingY={2}
-            flexBasis={params.idRepository ? "20%" : "100%"}
-            overflow="scroll"
             sx={(theme) => ({
-              [theme.breakpoints.only("xs")]: {
-                height: "10vh",
-                overflow: "hidden",
-              },
+              [theme.breakpoints.only("xs")]: { flexDirection: "column" },
             })}
           >
-            {repositories.length === 0 ? (
-              <>
-                <SkeletonTemplateListItem />
-                <SkeletonTemplateListItem />
-                <SkeletonTemplateListItem />
-                <SkeletonTemplateListItem />
-                <SkeletonTemplateListItem />
-              </>
-            ) : (
-              repositories?.map((repository: any) => {
-                return (
-                  <Paper
-                    variant="outlined"
-                    sx={{
-                      marginY: 1,
-                      paddingX: 2,
-                      paddingY: 1,
-                      backgroundColor:
-                        +params.idRepository! === repository.id
-                          ? "silver"
-                          : "inherit",
-                    }}
-                    key={repository.id}
-                  >
-                    <GitHubIcon />
-                    <Typography variant="subtitle2">
-                      {repository.name}
-                    </Typography>
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      flexDirection="column"
-                      sx={(theme) => ({
-                        [theme.breakpoints.only("xs")]: {
-                          flexDirection: "column",
-                        },
-                      })}
+            <Box
+              display="flex"
+              flexDirection="column"
+              paddingY={2}
+              flexBasis={params.idRepository ? "20%" : "100%"}
+              overflow="scroll"
+              sx={(theme) => ({
+                [theme.breakpoints.only("xs")]: {
+                  height: "10vh",
+                  overflow: "hidden",
+                },
+              })}
+            >
+              {repositories.length === 0 ? (
+                <>
+                  <SkeletonTemplateListItem />
+                  <SkeletonTemplateListItem />
+                  <SkeletonTemplateListItem />
+                  <SkeletonTemplateListItem />
+                  <SkeletonTemplateListItem />
+                </>
+              ) : (
+                repositories?.map((repository: any) => {
+                  return (
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        marginY: 1,
+                        paddingX: 2,
+                        paddingY: 1,
+                        backgroundColor: "white",
+                      }}
+                      key={repository.id}
                     >
-                      <Box flex={1}>
-                        <Typography variant="body2">
-                          {repository.description}
-                        </Typography>
+                      <GitHubIcon />
+                      <Typography variant="subtitle2">
+                        {repository.name}
+                      </Typography>
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        flexDirection="column"
+                        sx={(theme) => ({
+                          [theme.breakpoints.only("xs")]: {
+                            flexDirection: "column",
+                          },
+                        })}
+                      >
+                        <Box flex={1}>
+                          <Typography variant="body2">
+                            {repository.description}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Button
-                      component={RouterLink}
-                      to={`/repository/${repository.id}`}
-                    >
-                      Contributors
-                    </Button>
-                  </Paper>
-                );
-              })
-            )}
+                      <Button
+                        component={RouterLink}
+                        to={`/repository/${repository.id}`}
+                      >
+                        Contributors
+                      </Button>
+                    </Paper>
+                  );
+                })
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </Container>
     </>
   );
 };
