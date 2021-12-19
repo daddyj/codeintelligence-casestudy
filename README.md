@@ -8,7 +8,7 @@
 
 OR
 
-- Click here: https://codeintelligence-casestudy-5owqrbeyz-acunguersoy.vercel.app/ :)
+- Click here: https://codeintelligence-casestudy-cw06ukczi-acunguersoy.vercel.app/ :)
 
 ### Concept
 
