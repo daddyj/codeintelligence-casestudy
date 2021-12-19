@@ -1,7 +1,7 @@
 import {
+  CLEAR_REPOSITORIES,
   INIT_OCTOKIT,
   LOAD_PUBLIC_REPOSITORIES,
-  SET_LOADING,
 } from "./actionTypes";
 
 export const initOctokit = (user: string) => {
@@ -10,6 +10,10 @@ export const initOctokit = (user: string) => {
     user,
   };
 };
+
+export const clearRepositories = () => ({
+  type: CLEAR_REPOSITORIES,
+});
 
 export const setRepositoriesForCurrentPage = ({
   data,
@@ -20,8 +24,4 @@ export const setRepositoriesForCurrentPage = ({
   data,
   link,
   resetIndices,
-});
-
-export const setLoading = () => ({
-  type: SET_LOADING,
 });

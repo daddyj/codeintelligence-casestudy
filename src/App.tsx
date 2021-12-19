@@ -61,7 +61,7 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     if (user && window.location.pathname === "/")
-      navigate("/repositories?since=0");
+      navigate("/repositories/0", { state: { resetLoading: true } });
   }, [user, navigate]);
 
   return (

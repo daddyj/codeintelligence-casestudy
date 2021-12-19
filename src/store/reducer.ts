@@ -1,7 +1,7 @@
 import {
+  CLEAR_REPOSITORIES,
   INIT_OCTOKIT,
   LOAD_PUBLIC_REPOSITORIES,
-  SET_LOADING,
 } from "./actionTypes";
 
 export type StoreState = {
@@ -9,21 +9,21 @@ export type StoreState = {
   repositories: any[];
   updatedAt?: Date;
   since: {
-    current: number;
     next: number;
-    first: number;
   };
-  currentPageLoaded: boolean;
 };
 
 export const initialState = {
   repositories: [],
   since: {
-    current: 0,
-    first: 0,
     next: 0,
   },
-  currentPageLoaded: false,
+};
+
+const getNextPageParameter = (link: string) => {
+  console.log("link", link);
+  const [nextLinkRaw] = link.split(",");
+  return +nextLinkRaw.split(";")[0].split("since=")[1].slice(0, -1); // sorry for the line :))
 };
 
 export const reducer = (state: StoreState = initialState, action: any) => {
@@ -32,31 +32,19 @@ export const reducer = (state: StoreState = initialState, action: any) => {
       const { user } = action;
       return { ...state, user };
     }
-    case SET_LOADING:
+    case CLEAR_REPOSITORIES:
       return {
         ...state,
-        currentPageLoaded: false,
+        repositories: [],
       };
     case LOAD_PUBLIC_REPOSITORIES:
-      console.log("link", action.link);
-      const [nextLinkRaw] = action.link.split(",");
-      const nextSince = nextLinkRaw
-        .split(";")[0]
-        .split("since=")[1]
-        .slice(0, -1);
-
-      const { resetIndices } = action;
-
       return {
         ...state,
         updatedAt: new Date(),
         repositories: action.data,
         since: {
-          ...state.since,
-          current: resetIndices ? 0 : state.since.next ?? state.since.current,
-          next: nextSince,
+          next: getNextPageParameter(action.link),
         },
-        currentPageLoaded: true,
       };
     default:
       return { ...state };
