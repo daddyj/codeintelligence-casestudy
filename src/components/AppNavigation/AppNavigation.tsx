@@ -19,7 +19,7 @@ const AppNavigation = () => {
   const handlePageChange = useCallback(
     (next: number) => () => {
       dispatch(clearRepositories());
-      navigate(`/repositories/${next}`, { state: { resetLoading: true } });
+      navigate(`/repositories/${next}`);
     },
     [dispatch, navigate]
   );

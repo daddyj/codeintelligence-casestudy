@@ -25,8 +25,7 @@ const App: React.FC<{}> = () => {
   }, [initApp, octokit]);
 
   useEffect(() => {
-    if (user && window.location.pathname === "/")
-      navigate("/repositories/0", { state: { resetLoading: true } });
+    if (user && window.location.pathname === "/") navigate("/repositories/0");
   }, [user, navigate]);
 
   return (

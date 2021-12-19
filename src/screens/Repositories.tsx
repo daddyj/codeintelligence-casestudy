@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { useOctokit } from "../hooks/useOctokit";
 import { setRepositoriesForCurrentPage } from "../store/actionCreators";
 import { StoreState } from "../store/reducer";
@@ -53,7 +53,6 @@ const HeaderIntervalLabel: React.FC<any> = ({ isLoading, label }) => {
 
 export const Repositories = () => {
   const params = useParams();
-  const { state } = useLocation();
   const dispatch = useDispatch();
   const { user, repositories } = useSelector((state: StoreState) => state);
   const octokit = useOctokit();
@@ -76,10 +75,10 @@ export const Repositories = () => {
   );
 
   useEffect(() => {
-    if (!!params.idSince && user && state?.resetLoading) {
+    if (!!params.idSince && user) {
       loadRepositories(+params.idSince);
     }
-  }, [state, loadRepositories, params, user]);
+  }, [loadRepositories, params, user]);
 
   return (
     <>
