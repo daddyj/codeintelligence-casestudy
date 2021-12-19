@@ -4,14 +4,14 @@ import React from "react";
 
 export const Pagination: React.FC<any> = ({ since, onChange }) => {
   return (
-    <Box display="flex" justifyContent="center" marginY={4}>
-      <Button variant="contained" onClick={onChange(0)}>
+    <Box display="flex" justifyContent="center" marginY={2}>
+      <Button variant="outlined" onClick={onChange(0)}>
         FIRST PAGE
       </Button>
       {since?.next ? (
         <>
           <Box width={16} />
-          <Button variant="contained" onClick={onChange(since.next)}>
+          <Button variant="outlined" onClick={onChange(since.next)}>
             NEXT PAGE
           </Button>
         </>

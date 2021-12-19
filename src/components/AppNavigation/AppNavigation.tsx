@@ -1,6 +1,8 @@
+import GitHubIcon from "@mui/icons-material/GitHub";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,19 +28,29 @@ const AppNavigation = () => {
 
   return (
     <AppBar>
-      <Toolbar>
-        <Box
-          display="flex"
-          width="100%"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Pagination
-            since={{ ...since, current: currentRepoIndexSince }}
-            onChange={handlePageChange}
-          />
+      <Box
+        component={Toolbar}
+        display="flex"
+        width="100%"
+        alignItems="center"
+        justifyContent="center"
+        flexDirection="column"
+        sx={{ backgroundColor: "#DDD" }}
+      >
+        <Box marginY={1} display="flex" alignItems="center">
+          <GitHubIcon sx={{ color: "black" }} />
+          <Box component={Typography} marginX={1} sx={{ color: "black" }}>
+            -
+          </Box>
+          <Typography variant="h5" sx={{ color: "black" }}>
+            Case Study
+          </Typography>
         </Box>
-      </Toolbar>
+        <Pagination
+          since={{ ...since, current: currentRepoIndexSince }}
+          onChange={handlePageChange}
+        />
+      </Box>
     </AppBar>
   );
 };
