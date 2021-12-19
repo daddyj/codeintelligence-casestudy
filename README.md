@@ -1,46 +1,37 @@
-# Getting Started with Create React App
+# Case Study
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Getting started
 
-## Available Scripts
+- Clone repository
+- Call `yarn` in CLI
+- Call `yarn start` for starting local development server and running it locally
 
-In the project directory, you can run:
+OR
 
-### `yarn start`
+- Click here: https://codeintelligence-casestudy-5owqrbeyz-acunguersoy.vercel.app/ :)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Concept
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+I am using the following helper libraries for making things work:
 
-### `yarn test`
+- `redux`
+- `react-router-dom`
+- `@mui` (Material-UI)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### redux
 
-### `yarn build`
+`redux` is used for storing the meta infos of the fetched github repositories per page (here: 100 `per_page`). This can be reused when visiting `Details` page of a repository as the meta info for the repository has all infos needed for querying Github API for repo details.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### react-router-dom
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+`react-router-dom` is used for client side routing, namely for showing different github list pages and showing the details for the selected repository.
+The connection to browser history (when using back and forth of browser) helps for querying the requested information. Also it enables to share a specific page link in the list view as the route parameter ensure showing the requested informations (here: the 100 github repos for the requested page) - example: https://codeintelligence-casestudy-5owqrbeyz-acunguersoy.vercel.app/repositories/200 (where `200` is the id of the first repository to show)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### @mui
 
-### `yarn eject`
+`Material UI` is used for having a styled components library for rendering the content of the application, namely using buttons, text, layout components for rendering content of the list and the details page
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Things to improve
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+First, adding more type safety by adding type definition for every written component, namely removing all `any` usages and of course, tests can be added. The nested approach for `react-router-dom` can be used for more usage of the powerful `<Outlet />` component, provided by the library.
+Finally, all magic color values can be moved to a custom @mui `Theme` definition.
