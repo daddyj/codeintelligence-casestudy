@@ -5,15 +5,14 @@ import Paper from "@mui/material/Paper";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
-import queryString from "query-string";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, Outlet, useParams } from "react-router-dom";
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import { useOctokit } from "../hooks/useOctokit";
 import { setRepositoriesForCurrentPage } from "../store/actionCreators";
 import { StoreState } from "../store/reducer";
 
-const SkeletonTemplate = () => {
+const SkeletonTemplateListItem = () => {
   return (
     <Paper
       variant="outlined"
@@ -42,38 +41,29 @@ const SkeletonTemplate = () => {
   );
 };
 
-export const Pagination: React.FC<any> = ({ since, onChange }) => {
-  return (
-    <Box display="flex" justifyContent="center" marginY={4}>
-      <Button variant="contained" onClick={onChange(0, true)}>
-        FIRST PAGE
-      </Button>
-      {since?.next ? (
-        <>
-          <Box width={16} />
-          <Button variant="contained" onClick={onChange(since.next)}>
-            NEXT PAGE
-          </Button>
-        </>
-      ) : null}
-    </Box>
+const HeaderIntervalLabel: React.FC<any> = ({ isLoading, label }) => {
+  return isLoading ? (
+    <Skeleton width={100} sx={{ display: "inline-block" }} />
+  ) : (
+    <Typography component="span" variant="h6" color="primary">
+      {label}
+    </Typography>
   );
 };
 
 export const Repositories = () => {
   const params = useParams();
+  const { state } = useLocation();
   const dispatch = useDispatch();
+  const { user, repositories } = useSelector((state: StoreState) => state);
   const octokit = useOctokit();
-  const { user, repositories, currentPageLoaded } = useSelector(
-    (state: StoreState) => state
-  );
 
   const loadRepositories = useCallback(
     async (since: number) => {
       const response = await octokit?.request("GET /repositories", {
         since,
       });
-      console.log("public repositories", response);
+
       if (response?.data && response?.headers.link)
         dispatch(
           setRepositoriesForCurrentPage({
@@ -86,29 +76,25 @@ export const Repositories = () => {
   );
 
   useEffect(() => {
-    const parsed = queryString.parse(window.location.search);
-
-    console.log("params", parsed.since);
-    if (parsed.since && user && !currentPageLoaded) {
-      loadRepositories(+parsed.since);
-      return;
+    if (!!params.idSince && user && state?.resetLoading) {
+      loadRepositories(+params.idSince);
     }
-  }, [user, currentPageLoaded, loadRepositories]);
+  }, [state, loadRepositories, params, user]);
 
   return (
     <>
-      {repositories.length > 0 && (
-        <Typography variant="h5">
-          List of all public repositories from{" "}
-          <Typography component="span" variant="h6" color="primary">
-            {repositories?.[0]?.name}
-          </Typography>{" "}
-          to{" "}
-          <Typography component="span" variant="h6" color="primary">
-            {repositories?.[repositories.length - 1]?.name}
-          </Typography>
-        </Typography>
-      )}
+      <Typography variant="h5">
+        List of all public repositories from{" "}
+        <HeaderIntervalLabel
+          isLoading={repositories.length === 0}
+          label={repositories?.[0]?.name}
+        />{" "}
+        to{" "}
+        <HeaderIntervalLabel
+          isLoading={repositories.length === 0}
+          label={repositories?.[repositories.length - 1]?.name}
+        />
+      </Typography>
 
       <Box
         component={Container}
@@ -135,13 +121,13 @@ export const Repositories = () => {
               },
             })}
           >
-            {!currentPageLoaded ? (
+            {repositories.length === 0 ? (
               <>
-                <SkeletonTemplate />
-                <SkeletonTemplate />
-                <SkeletonTemplate />
-                <SkeletonTemplate />
-                <SkeletonTemplate />
+                <SkeletonTemplateListItem />
+                <SkeletonTemplateListItem />
+                <SkeletonTemplateListItem />
+                <SkeletonTemplateListItem />
+                <SkeletonTemplateListItem />
               </>
             ) : (
               repositories?.map((repository: any) => {
@@ -182,7 +168,7 @@ export const Repositories = () => {
                     </Box>
                     <Button
                       component={RouterLink}
-                      to={`/repositories/${repository.id}`}
+                      to={`/repository/${repository.id}`}
                     >
                       Contributors
                     </Button>
@@ -191,11 +177,6 @@ export const Repositories = () => {
               })
             )}
           </Box>
-          {params.idRepository && (
-            <Box display="flex" flexBasis="80%">
-              <Outlet />
-            </Box>
-          )}
         </Box>
       </Box>
     </>
