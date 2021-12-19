@@ -43,7 +43,7 @@ export const Details: React.FC<{}> = () => {
       </Typography>
       <Box display="flex" flexDirection="column" marginY={2}>
         {contributors.map((contributor: any) => (
-          <Contributor contributor={contributor} />
+          <Contributor contributor={contributor} key={contributor.login} />
         ))}
       </Box>
     </Container>

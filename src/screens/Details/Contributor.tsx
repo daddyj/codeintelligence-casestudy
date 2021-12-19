@@ -31,7 +31,9 @@ export const Contributor: React.FC<any> = ({ contributor }) => {
         </Typography>
         <Typography variant="body2">
           Contributions{" "}
-          <Typography fontWeight="bold">{contributor.contributions}</Typography>
+          <Typography component="span" fontWeight="bold">
+            {contributor.contributions}
+          </Typography>
         </Typography>
       </Box>
     </Paper>

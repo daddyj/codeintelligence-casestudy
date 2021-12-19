@@ -80,7 +80,7 @@ export const Repositories = () => {
                 <SkeletonList />
               ) : (
                 repositories?.map((repository: any) => (
-                  <Repository repository={repository} />
+                  <Repository repository={repository} key={repository.id} />
                 ))
               )}
             </Box>
