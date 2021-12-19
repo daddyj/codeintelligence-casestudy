@@ -1,8 +1,11 @@
 import { createStore } from "redux";
 import { initialState, reducer, StoreState } from "./reducer";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 const configureStore = (preloadedState: StoreState) => {
-  const store = createStore(reducer, preloadedState);
+  const composedEnhancers = composeWithDevTools();
+
+  const store = createStore(reducer, preloadedState, composedEnhancers);
 
   return store;
 };
