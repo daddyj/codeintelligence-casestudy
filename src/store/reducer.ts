@@ -21,7 +21,6 @@ export const initialState = {
 };
 
 const getNextPageParameter = (link: string) => {
-  console.log("link", link);
   const [nextLinkRaw] = link.split(",");
   return +nextLinkRaw.split(";")[0].split("since=")[1].slice(0, -1); // sorry for the line :))
 };

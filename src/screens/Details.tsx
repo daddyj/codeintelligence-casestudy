@@ -22,7 +22,6 @@ export const Details: React.FC<{}> = () => {
   const [contributors, setContributors] = useState<any[]>([]);
 
   const loadRepoInfo = useCallback(async () => {
-    // TODO: await detailed repo info via github api
     const response = await octokit?.request(
       "GET /repos/{owner}/{repo}/contributors",
       {
@@ -31,15 +30,11 @@ export const Details: React.FC<{}> = () => {
       }
     );
 
-    console.log("contributors?", response?.data);
     if (response?.data) setContributors(response?.data);
   }, [metaInfo.name, metaInfo.owner.login, octokit]);
 
   useEffect(() => {
-    if (metaInfo) {
-      console.log("repo in meta info", metaInfo);
-      loadRepoInfo();
-    }
+    if (metaInfo) loadRepoInfo();
   }, [loadRepoInfo, metaInfo]);
 
   return (
