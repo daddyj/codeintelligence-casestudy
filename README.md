@@ -1,5 +1,7 @@
 # Case Study
 
+Case study during my job application for code intelligence. Turned out positive, got an offer but have chosen some other offering.
+
 ## Getting started
 
 - Clone repository
